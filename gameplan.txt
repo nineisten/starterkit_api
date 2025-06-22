@@ -1,0 +1,30 @@
+API business logic.
+
+create user logic
+    - Define user data
+        - name
+        - email
+        - username
+        - socials[]
+    - define user roles
+    - create CRUD routes for users
+    - create profile route
+    - create users list route
+
+create subcription handler 
+    - define subscription data 
+        - title
+        - description
+        - price
+        - discounts
+        - billing period
+        - features [] 
+    - create Crud routes for subscriptions
+    - list subscriptions
+    - apply member logic to user
+
+create payment system
+    - integrate crypto wallet
+    - integrate stripe api
+
+

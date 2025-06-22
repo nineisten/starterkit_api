@@ -1,0 +1,212 @@
+import { Request,Response,NextFunction } from "express";
+import { 
+    User,
+    users,
+    newUserValidationSchema,
+    UserValidationSchema,
+    DeleteUserValidation,
+    UserProfileValidation
+} from "../../models1/users/users";
+import { 
+    UserPermissionsSchema, 
+    deleteUserPermissionsSchema, 
+    userPermissions
+} from "../../models1/users/userPermissions";
+import { randomUUID } from "crypto";
+import {z} from "zod"
+
+
+//apply permissions to users
+export const  grantUserRoles = (userId:string,roleObj:{
+    role:string,
+    code:number,
+    expires_at:Date|null
+
+})=>{
+    
+    const assignmentDate = new Date()
+    if (!userId || !roleObj){
+        return{message:'Invalid Request: userId, roles, or response object is missing'}
+    }
+    const roleExists = userPermissions.find((p)=>p.userId === userId && p.role === roleObj.role) 
+    if (roleExists){
+        return{message:'Invalid Request: Role already exists'}
+        
+    }
+    const grantRole = {
+        userId,
+        role:roleObj.role,
+        code:roleObj.code,
+        assigned_at:assignmentDate,
+        expires_at:roleObj.expires_at||null
+    }
+    userPermissions.push(grantRole)
+    const currentRoles = userPermissions.filter((p)=>p.userId === userId)
+    return {message:'User permissions have been granted',currentRoles}
+}
+
+//user role revocation handler module
+const revokeUserRoles = (userId:string,role:string)=>{
+    if(!userId || !role){
+        return{message:'Invalid Request: Must include user id and role'}
+    }
+    const roleExists = userPermissions.find((p)=>p.userId === userId && p.role === role)
+    if (!roleExists){
+        return{message:'Invalid Request: This role does not exist'}
+    }
+    const roleIndex = userPermissions.findIndex((r)=>r.userId === userId && r.role ===role)
+    userPermissions.splice(roleIndex,1)
+    return userPermissions.filter((p)=>p.userId === userId)
+}
+//create new user 
+export const createUser = (req:Request,res:Response,next:NextFunction)=>{
+    try{
+        const validatedInputs = newUserValidationSchema.parse(req.body)
+        const date:Date = new Date()
+        const {name,username,email,socials} = validatedInputs
+        // let {userId} = validatedInputs
+        const newUser:User = {
+            id:randomUUID(),
+            name:name,
+            email,
+            username,
+            socials:socials || [],
+            created_at:date,
+        }
+        users.push(newUser)
+        const userRoles = grantUserRoles(newUser.id,
+            {role:'user',code:1001,expires_at:null}
+        )
+        res.status(201).json({newUser,userRoles})
+        
+    }catch(error){
+        if(error instanceof z.ZodError){
+            res.status(400).json({errors:error.errors})
+            return
+        }
+        next(error)
+    }
+}
+//return user list
+export const getUsers = (req:Request,res:Response,next:NextFunction)=>{
+        try{
+            res.json(users)
+        }catch(error){
+            next(error)
+        }
+}
+//return individual user data
+export const getUserByUsername = (req:Request,res:Response,next:NextFunction)=>{
+    try{
+        const validatedInputs = UserProfileValidation.parse(req.body)
+        const {username} = validatedInputs
+        const user = users.find(u=>u.username === username)
+        if(!user){
+            res.status(404).json({message:'User not found.'})
+            return
+        }
+        const userRoles = userPermissions.filter((p)=>p.userId === user.id)
+        res.json({user,userRoles})
+    }catch(error){
+        if(error instanceof z.ZodError){
+            res.status(400).json({errors:error.errors})
+        }
+        next(error)
+    }
+}
+//add and remove roles from user ids
+export const appendUserRoles =(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const validatedInputs = UserPermissionsSchema.parse(req.body)
+        const {userId,role,code,expires_at}= validatedInputs
+        const currentRoles = userPermissions.filter((p)=>p.userId === userId)
+        if (currentRoles.find(r=>r.role === role && r.userId === userId)){
+            res.status(400).json({message:'Role already exists'})
+            return
+        }
+        grantUserRoles(userId,{role,code,expires_at})
+        res.status(201).json({
+            message:"user roles have been updated",
+            permissions:userPermissions.filter(p=>p.userId === userId)})
+    } catch (error) {
+        if(error instanceof z.ZodError){
+            res.status(400).json({errors:error.errors})
+            return
+        }
+        next(error)
+    }
+}
+//delet role route handler
+export const deleteUserRoles=(req:Request,res:Response,next:NextFunction)=>{
+    try {
+        //enter an array of roles
+        const validatedInputs = deleteUserPermissionsSchema.parse(req.body)
+        const {userId,roles} = validatedInputs
+        
+        for(let r of roles){
+            revokeUserRoles(userId,r)
+        }
+        res.status(201).json({message:'roles have been removed'})
+    } catch (error) {
+        if(error instanceof z.ZodError){
+            res.status(400).json({errors:error.errors})
+            return
+        }
+        next(error)
+    }
+
+}
+//uodate user data
+export const updateUser = (req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const validatedInputs = UserValidationSchema.parse(req.body) 
+        const {userId,name,username,email,socials} = validatedInputs
+        const userIndex = users.findIndex(u=>u.id === userId)
+        
+        ////add validation 
+        users[userIndex].name = name
+        users[userIndex].email = email
+        users[userIndex].username = username
+
+        //reminder to check for matching handles
+        users[userIndex].socials.push(...socials||[])
+        res.status(201).json(users[userIndex])
+
+    } catch (error) {
+        if (error instanceof z.ZodError){
+            res.status(400).json({errors:error.errors})
+            return
+        }
+        next(error)
+    }
+}
+//remove user from database
+export const deleteUser = (req:Request,res:Response,next:NextFunction)=>{
+    try {
+        const validatedInputs = DeleteUserValidation.parse(req.body)
+        const {userId} = validatedInputs
+        const userIndex = users.findIndex((u)=>u.id === userId)
+       
+        if (userIndex === -1) {
+            res.status(404).json({message:'user not found'})
+            return
+        }
+            //remove all user permissions
+        for (let i = userPermissions.length; i>=0 ;i--){
+            if (userPermissions[i]&&userPermissions[i].userId === userId){
+                userPermissions.splice(i,1)
+            }
+        }
+        //remove user
+        users.splice(userIndex,1)
+        res.status(201).json({message:"Success" })
+
+    } catch (error) {
+        if(error instanceof z.ZodError){
+            res.status(400).json({errors:error.errors})
+            return
+        }
+        next(error)
+    }
+}
+
