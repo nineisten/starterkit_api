@@ -1,2 +1,4 @@
 .env
 gameplan.txt
+src/controllers/users/userController.ts.old
+src/models1/
