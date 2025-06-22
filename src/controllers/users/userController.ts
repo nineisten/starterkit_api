@@ -2,7 +2,6 @@ import { NextFunction,Request,Response} from "express";
 import { insertUserSchema } from "../../models/validations/users";
 import { db } from "../../models";
 import { users } from "../../models/schema/users";
-import { DatabaseError } from "pg";
 
 
 export async function createUser (req:Request,res:Response,next:NextFunction){
