@@ -4,18 +4,17 @@ to documentation. all of the standard routes will be provided so you can simply 
 
 {
 Features:
-{user Creation routes},
+user Creation routes,
 user role management routes,
 subscription routes,
 Blog routes,
 full validation schema
-} 
 
 dependencies Include: 
-  node.js
-  express
-  drizzle.orm
-  Zod
+  node.js,
+  express,
+  drizzle.orm,
+  Zod,
   auth.js
 
 
