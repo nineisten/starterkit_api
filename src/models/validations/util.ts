@@ -6,21 +6,39 @@ import {z} from "zod"
 export const validateEmail = z
         .string()
         .email('invalid email address')
+export const validateEmail_null = z
+        .string()
+        .email('invalid email address')
+        .nullable()
+
 
 export const validateUUID = z
         .string()
         .uuid()
 
+//nullable uuid
+export const validateUUID_null = z
+        .string()
+        .uuid()
+        .nullable()
+
 export const validateName= z
         .string()
         .min(2,'Name is required')
         .regex(/^[A-Za-z\s]+$/,'Name must contain only alphabetic character')
-    
+
 export const validateUsername=z
         .string()
         .min(3,'Username is required')
         .max(24,'Username can not exceed 24 characters')
         .regex(/^[a-z0-9_-]+$/,'Username must only contain lowercase letters, numbers, underscore or hyphen characters')
+
+export const validateUsername_null = z
+        .string()
+        .min(3,'Username is required')
+        .max(24,'Username can not exceed 24 characters')
+        .regex(/^[a-z0-9_-]+$/,'Username must only contain lowercase letters, numbers, underscore or hyphen characters')
+        .nullable()
 
 export const validateSocials = z
         .array(z

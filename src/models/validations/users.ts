@@ -1,11 +1,13 @@
 import { nullable } from "zod/v4";
 import {  
     validateEmail, 
+    validateEmail_null,
     validateId, 
     validateName, 
     validateSocials, 
     validateUrl, 
     validateUsername, 
+    validateUsername_null,
     validateUUID 
 } from "./util";
 import {z} from "zod"
@@ -36,14 +38,15 @@ export type  insertUserRoles = z.infer<typeof insertUserRolesSchema>;
 
 ///begin select user schemas
 export const selectUserSchema=z.object({
-
     username:validateUsername,
-    email:validateEmail
+    email:validateEmail,
 })
-
 export const selectSocialsSchema = z.object({
     userId:validateUUID,
     socialId:validateId
+})
+export const selectUserByUsernameSchema = z.object({
+    username:validateUsername,
 })
 
 export const selectUserRolesSchema = z.object({

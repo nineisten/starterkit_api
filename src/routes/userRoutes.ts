@@ -3,7 +3,7 @@ import { checkUser } from "../middleware/checkUser";
 import { 
     createUser,
     // getUsers,
-    // getUserByUsername,
+    getUserByUsername,
     // updateUser,
     // deleteUser, 
     // appendUserRoles,
@@ -13,7 +13,7 @@ import {
 const userRoutes = Router()
 
 // userRoutes.get('/',getUsers)
-// userRoutes.get('/details',getUserByUsername)
+userRoutes.get('/:username',getUserByUsername)
 userRoutes.post('/',checkUser,createUser)
 // userRoutes.put('/',updateUser)
 // userRoutes.delete('/',deleteUser)
