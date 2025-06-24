@@ -12,6 +12,33 @@ CREATE TABLE "categories" (
 	CONSTRAINT "categories_label_unique" UNIQUE("label")
 );
 --> statement-breakpoint
+CREATE TABLE "socials" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"user_id" uuid NOT NULL,
+	"platform" varchar(50),
+	"handle" varchar(24)
+);
+--> statement-breakpoint
+CREATE TABLE "userRoles" (
+	"user_id" uuid NOT NULL,
+	"role_id" integer NOT NULL,
+	"assigned_at" timestamp DEFAULT now() NOT NULL,
+	"expires_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "pk_userRoles" PRIMARY KEY("role_id","user_id")
+);
+--> statement-breakpoint
+CREATE TABLE "users" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"name" text NOT NULL,
+	"email" varchar(100) NOT NULL,
+	"username" varchar(24) NOT NULL,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "users_email_unique" UNIQUE("email"),
+	CONSTRAINT "users_username_unique" UNIQUE("username")
+);
+--> statement-breakpoint
 CREATE TABLE "post_authors" (
 	"post_id" integer,
 	"user_id" uuid,
@@ -84,35 +111,11 @@ CREATE TABLE "tags" (
 	CONSTRAINT "tags_label_unique" UNIQUE("label")
 );
 --> statement-breakpoint
-CREATE TABLE "socials" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"user_id" uuid NOT NULL,
-	"platform" varchar(50),
-	"handle" varchar(24)
-);
---> statement-breakpoint
-CREATE TABLE "userRoles" (
-	"user_id" uuid NOT NULL,
-	"role_id" integer NOT NULL,
-	"assigned_at" timestamp DEFAULT now() NOT NULL,
-	"expires_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "pk_userRoles" PRIMARY KEY("role_id","user_id")
-);
---> statement-breakpoint
-CREATE TABLE "users" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"name" text NOT NULL,
-	"email" varchar(100) NOT NULL,
-	"username" varchar(24) NOT NULL,
-	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp DEFAULT now() NOT NULL,
-	CONSTRAINT "users_email_unique" UNIQUE("email"),
-	CONSTRAINT "users_username_unique" UNIQUE("username")
-);
---> statement-breakpoint
 ALTER TABLE "category_tree" ADD CONSTRAINT "category_tree_parent_category_id_categories_id_fk" FOREIGN KEY ("parent_category_id") REFERENCES "public"."categories"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "category_tree" ADD CONSTRAINT "category_tree_child_category_id_categories_id_fk" FOREIGN KEY ("child_category_id") REFERENCES "public"."categories"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "socials" ADD CONSTRAINT "socials_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "userRoles" ADD CONSTRAINT "userRoles_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "userRoles" ADD CONSTRAINT "userRoles_role_id_roles_id_fk" FOREIGN KEY ("role_id") REFERENCES "public"."roles"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "post_authors" ADD CONSTRAINT "post_authors_post_id_posts_id_fk" FOREIGN KEY ("post_id") REFERENCES "public"."posts"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "post_authors" ADD CONSTRAINT "post_authors_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "post_categories" ADD CONSTRAINT "post_categories_post_id_posts_id_fk" FOREIGN KEY ("post_id") REFERENCES "public"."posts"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
@@ -122,7 +125,4 @@ ALTER TABLE "post_tags" ADD CONSTRAINT "post_tags_tag_id_tags_id_fk" FOREIGN KEY
 ALTER TABLE "subscription_features" ADD CONSTRAINT "subscription_features_feature_id_features_id_fk" FOREIGN KEY ("feature_id") REFERENCES "public"."features"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "subscription_features" ADD CONSTRAINT "subscription_features_subscription_id_subscriptions_id_fk" FOREIGN KEY ("subscription_id") REFERENCES "public"."subscriptions"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "subscription_roles" ADD CONSTRAINT "subscription_roles_subscription_id_subscriptions_id_fk" FOREIGN KEY ("subscription_id") REFERENCES "public"."subscriptions"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "subscription_roles" ADD CONSTRAINT "subscription_roles_role_id_roles_id_fk" FOREIGN KEY ("role_id") REFERENCES "public"."roles"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "socials" ADD CONSTRAINT "socials_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "userRoles" ADD CONSTRAINT "userRoles_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "userRoles" ADD CONSTRAINT "userRoles_role_id_roles_id_fk" FOREIGN KEY ("role_id") REFERENCES "public"."roles"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "subscription_roles" ADD CONSTRAINT "subscription_roles_role_id_roles_id_fk" FOREIGN KEY ("role_id") REFERENCES "public"."roles"("id") ON DELETE cascade ON UPDATE no action;

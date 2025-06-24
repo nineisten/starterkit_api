@@ -3,7 +3,7 @@ import { insertUserSchema, selectUserSchema,selectUserByUsernameSchema} from "..
 import { db } from "../../models";
 import { users } from "../../models/schema/users";
 import { DatabaseError } from "pg";
-import { eq, or } from "drizzle-orm";
+import { eq, or ,asc,desc} from "drizzle-orm";
 
 
 export async function createUser (req:Request,res:Response,next:NextFunction){
@@ -26,7 +26,28 @@ export async function createUser (req:Request,res:Response,next:NextFunction){
         next(error)
     }
 }
-//query a list of users
+//query a list of users (username only)
+
+export async function getUsers(req:Request,res:Response,next:NextFunction){
+    try {
+
+        const users = await db.query.users.findMany()
+
+        // const userList = await db
+        //     .select({name:users.username})
+        //     .from(users)
+        // if(userList.length === 0){
+        //     res.status(404).json({message:'There are no users'})
+        // }
+        // const {sort,order,page,limit,role} = req.params
+
+        // res.status(201).json(userList)
+    } catch (error) {
+        next(error)
+    }
+}
+
+//get individual users based on their username
 export async function getUserByUsername(req:Request,res:Response,next:NextFunction){
     try {
         const result = selectUserByUsernameSchema.safeParse(req.params)
@@ -38,15 +59,14 @@ export async function getUserByUsername(req:Request,res:Response,next:NextFuncti
         const user = await db.select().from(users).where(eq(users.username,username));
         if (user.length <= 0){
             res.status(404).json({message:'User not found'})
+            return
         }
         res.status(201).json(user[0])
     } catch (error) {
         next(error)
     }
 }
-export async function getUsers(req:Request,res:Response,next:NextFunction){
-    
-}
+
 export async function updateUser(req:Request,res:Response, next:NextFunction){
 
 }

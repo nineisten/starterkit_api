@@ -2,7 +2,7 @@ import { Router } from "express"
 import { checkUser } from "../middleware/checkUser";
 import { 
     createUser,
-    // getUsers,
+    getUsers,
     getUserByUsername,
     // updateUser,
     // deleteUser, 
@@ -12,7 +12,7 @@ import {
 
 const userRoutes = Router()
 
-// userRoutes.get('/',getUsers)
+userRoutes.get('/',getUsers)
 userRoutes.get('/:username',getUserByUsername)
 userRoutes.post('/',checkUser,createUser)
 // userRoutes.put('/',updateUser)
