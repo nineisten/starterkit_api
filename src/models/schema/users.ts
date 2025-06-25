@@ -19,7 +19,7 @@ export const socials = pgTable('socials',{
     handle:varchar('handle',{length:24}),
 })
 //junction table to connect user roles to user 
-export const userRoles = pgTable('userRoles',{
+export const userRoles = pgTable('user_roles',{
     // id:serial('id').primaryKey(),
     userId:uuid('user_id').notNull().references(()=>users.id,{onDelete:'cascade'}),
     roleId:integer('role_id').notNull().references(()=>roles.id,{onDelete:'cascade'}),

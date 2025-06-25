@@ -19,7 +19,7 @@ CREATE TABLE "socials" (
 	"handle" varchar(24)
 );
 --> statement-breakpoint
-CREATE TABLE "userRoles" (
+CREATE TABLE "user_roles" (
 	"user_id" uuid NOT NULL,
 	"role_id" integer NOT NULL,
 	"assigned_at" timestamp DEFAULT now() NOT NULL,
@@ -69,11 +69,11 @@ CREATE TABLE "posts" (
 --> statement-breakpoint
 CREATE TABLE "roles" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"role_name" varchar(50) NOT NULL,
+	"name" varchar(50) NOT NULL,
 	"description" text NOT NULL,
-	"role_code" integer NOT NULL,
-	CONSTRAINT "roles_role_name_unique" UNIQUE("role_name"),
-	CONSTRAINT "roles_role_code_unique" UNIQUE("role_code")
+	"code" integer DEFAULT floor(random() * 9000 + 1000::integer) NOT NULL,
+	CONSTRAINT "roles_name_unique" UNIQUE("name"),
+	CONSTRAINT "roles_code_unique" UNIQUE("code")
 );
 --> statement-breakpoint
 CREATE TABLE "features" (
@@ -114,8 +114,8 @@ CREATE TABLE "tags" (
 ALTER TABLE "category_tree" ADD CONSTRAINT "category_tree_parent_category_id_categories_id_fk" FOREIGN KEY ("parent_category_id") REFERENCES "public"."categories"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "category_tree" ADD CONSTRAINT "category_tree_child_category_id_categories_id_fk" FOREIGN KEY ("child_category_id") REFERENCES "public"."categories"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "socials" ADD CONSTRAINT "socials_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "userRoles" ADD CONSTRAINT "userRoles_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "userRoles" ADD CONSTRAINT "userRoles_role_id_roles_id_fk" FOREIGN KEY ("role_id") REFERENCES "public"."roles"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "user_roles" ADD CONSTRAINT "user_roles_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "user_roles" ADD CONSTRAINT "user_roles_role_id_roles_id_fk" FOREIGN KEY ("role_id") REFERENCES "public"."roles"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "post_authors" ADD CONSTRAINT "post_authors_post_id_posts_id_fk" FOREIGN KEY ("post_id") REFERENCES "public"."posts"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "post_authors" ADD CONSTRAINT "post_authors_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "post_categories" ADD CONSTRAINT "post_categories_post_id_posts_id_fk" FOREIGN KEY ("post_id") REFERENCES "public"."posts"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint

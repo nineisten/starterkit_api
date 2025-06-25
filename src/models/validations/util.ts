@@ -77,7 +77,11 @@ export const validateDescription = z
         .string()
         .max(150,'Label can not exceed 150 characters')
         .nullable()
-
+        
+export const validateDescriptionRequired = z
+        .string()
+        .max(150,'Label can not exceed 150 characters')
+        
 export const validateCurrency = z
         .number({invalid_type_error:'Amount must be a number'})
         .positive('Value must be geeater than 0')

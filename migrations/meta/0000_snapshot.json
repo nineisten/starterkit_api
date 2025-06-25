@@ -1,5 +1,5 @@
 {
-  "id": "c57b0904-8a46-4ba6-b83e-ae35e8e09c3d",
+  "id": "5d59bf21-452e-4c13-9085-c1b117ef4408",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -161,8 +161,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.userRoles": {
-      "name": "userRoles",
+    "public.user_roles": {
+      "name": "user_roles",
       "schema": "",
       "columns": {
         "user_id": {
@@ -201,9 +201,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "userRoles_user_id_users_id_fk": {
-          "name": "userRoles_user_id_users_id_fk",
-          "tableFrom": "userRoles",
+        "user_roles_user_id_users_id_fk": {
+          "name": "user_roles_user_id_users_id_fk",
+          "tableFrom": "user_roles",
           "tableTo": "users",
           "columnsFrom": [
             "user_id"
@@ -214,9 +214,9 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "userRoles_role_id_roles_id_fk": {
-          "name": "userRoles_role_id_roles_id_fk",
-          "tableFrom": "userRoles",
+        "user_roles_role_id_roles_id_fk": {
+          "name": "user_roles_role_id_roles_id_fk",
+          "tableFrom": "user_roles",
           "tableTo": "roles",
           "columnsFrom": [
             "role_id"
@@ -557,8 +557,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "role_name": {
-          "name": "role_name",
+        "name": {
+          "name": "name",
           "type": "varchar(50)",
           "primaryKey": false,
           "notNull": true
@@ -569,29 +569,30 @@
           "primaryKey": false,
           "notNull": true
         },
-        "role_code": {
-          "name": "role_code",
+        "code": {
+          "name": "code",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": "floor(random() * 9000 + 1000::integer)"
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "roles_role_name_unique": {
-          "name": "roles_role_name_unique",
+        "roles_name_unique": {
+          "name": "roles_name_unique",
           "nullsNotDistinct": false,
           "columns": [
-            "role_name"
+            "name"
           ]
         },
-        "roles_role_code_unique": {
-          "name": "roles_role_code_unique",
+        "roles_code_unique": {
+          "name": "roles_code_unique",
           "nullsNotDistinct": false,
           "columns": [
-            "role_code"
+            "code"
           ]
         }
       },
