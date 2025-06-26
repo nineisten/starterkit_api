@@ -3,6 +3,9 @@ import { insertUserSchema, selectUserSchema,selectUserByUsernameSchema} from "..
 import { db } from "../../models";
 import { users } from "../../models/schema/users";
 import { eq, or ,asc,desc,SQL} from "drizzle-orm";
+import { roles } from "../../models/schema";
+import { userRoles } from "../../models/schema/users";
+
 
 
 export async function createUser (req:Request,res:Response,next:NextFunction){
@@ -27,10 +30,31 @@ export async function createUser (req:Request,res:Response,next:NextFunction){
     }
 }
 //query a list of users (username only)
+export async function assignUserRoles(req:Request,res:Response,next:NextFunction){
+    try {
+        const {roleName,userId} = req.body
+        const userRole = await db.select()
+            .from(roles)
+            .where(eq(roles.name,roleName))
+        if(!userRole[0]){
+            res.status(404).json({message:"User Role not found"})
+            return
+        }
+        const roleId = userRole[0].id
+        const assignedRole = await db
+            .insert(userRoles)
+            .values({userId,roleId})
+            .returning()
+
+        res.status(201).json({message:"role has been assigned", assignedRole})
+
+    } catch (error) {
+        
+    }
+}
 
 export async function getUsers(req:Request,res:Response,next:NextFunction){
     try {
-
         const {limit,offset,sort} = req.body
         const userList = await db.query.users.findMany({
             limit,
@@ -42,13 +66,13 @@ export async function getUsers(req:Request,res:Response,next:NextFunction){
             with:{
                 userRoles:true
             },
-
             orderBy:sort === 'asc'? 
                 asc(users.username):
                 desc(users.username)
         })
         if (userList.length === 0){
             res.status(404).json({message:'No users exist.'})
+            return
         }
         res.status(201).json(userList)
     } catch (error) {

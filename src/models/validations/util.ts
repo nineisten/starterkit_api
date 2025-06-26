@@ -11,7 +11,6 @@ export const validateEmail_null = z
         .email('invalid email address')
         .nullable()
 
-
 export const validateUUID = z
         .string()
         .uuid()
@@ -26,6 +25,11 @@ export const validateName= z
         .string()
         .min(2,'Name is required')
         .regex(/^[A-Za-z\s]+$/,'Name must contain only alphabetic character')
+export const validateNameNullable= z
+        .string()
+        .min(2,'Name is required')
+        .regex(/^[A-Za-z\s]+$/,'Name must contain only alphabetic character')
+        .nullable().optional()
 
 export const validateUsername=z
         .string()
@@ -57,6 +61,12 @@ export const validateCode = z
         .int()
         .min(4,'Role code must be a minimum of 4 digits')
         .positive('code must be a positive number')
+export const validateCodeNullable = z
+        .number()
+        .int()
+        .min(4,'Role code must be a minimum of 4 digits')
+        .positive('code must be a positive number')
+        .nullable()
 
 export const validateExpiration = z
         .date()
@@ -77,7 +87,7 @@ export const validateDescription = z
         .string()
         .max(150,'Label can not exceed 150 characters')
         .nullable()
-        
+
 export const validateDescriptionRequired = z
         .string()
         .max(150,'Label can not exceed 150 characters')

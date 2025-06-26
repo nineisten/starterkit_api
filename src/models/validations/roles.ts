@@ -1,5 +1,12 @@
 import {z} from 'zod'
-import { validateCode, validateDescription, validateDescriptionRequired, validateName } from './util'
+import { 
+    validateCode, 
+    validateDescription, 
+    validateDescriptionRequired, 
+    validateName,
+    validateCodeNullable,
+    validateNameNullable 
+} from './util'
 
 export const insertRoleSchema = z.object({
     name:validateName,
@@ -7,14 +14,12 @@ export const insertRoleSchema = z.object({
 })
 export type insertRole = z.infer<typeof insertRoleSchema>
 
-export const selectRoleByCodeShema = z.object({
-    code:validateCode
-})
-export const selectRoleByNameSchema = z.object({
+export const selectRoleSchema = z.object({
+    // code:validateCode,
     name:validateName
 })
-export type selectRoleByCode = z.infer<typeof selectRoleByCodeShema>
-export type selectRoleByName = z.infer<typeof selectRoleByNameSchema>
+
+export type selectRoleBy = z.infer<typeof selectRoleSchema>
 
 export const updateRoleSchema = z.object({
     name:validateName,

@@ -4,6 +4,7 @@ import {
     createUser,
     getUsers,
     getUserByUsername,
+    assignUserRoles,
     // updateUser,
     // deleteUser, 
     // appendUserRoles,
@@ -16,7 +17,7 @@ const userRoutes = Router()
 userRoutes.get('/',getUsers)
 userRoutes.get('/:username',getUserByUsername)
 userRoutes.post('/',checkUser,createUser)
-userRoutes.post('/roles',createRoles)
+userRoutes.post('/roles',assignUserRoles)
 // userRoutes.put('/',updateUser)
 // userRoutes.delete('/',deleteUser)
 // userRoutes.put('/roles',appendUserRoles)
