@@ -52,6 +52,12 @@ export const validateSocials = z
         .optional()
 
 //permissions validation schema 
+export const validateRoleArray = z
+        .array(
+                z.string()
+                .min(1,'Role is empty')
+                .regex(/^[A-Za-z]/,'Role must only be uppercase or lowercase letters')
+        )
 export const validateRole = z
         .string()
         .min(3,'Role name is required')
@@ -61,6 +67,7 @@ export const validateCode = z
         .int()
         .min(4,'Role code must be a minimum of 4 digits')
         .positive('code must be a positive number')
+
 export const validateCodeNullable = z
         .number()
         .int()
@@ -108,6 +115,7 @@ export const validateCurrencyCode = z
         .regex(/^[A-Z]{3}$/, 'Currency code must be 3 uppercase letters (e.g., USD, EUR)')
 
 //validate 
+export const validateBoolean = z.boolean()
 export const validateString_50 = z
     .string()
     .min(3,'Input must have more than 3 characters')
@@ -152,3 +160,4 @@ export const validatePostBody= z
     (value) => value.trim().length > 0,
     { message: 'Blog post body cannot be empty or only whitespace' })
 
+export const validateDate = z.date()

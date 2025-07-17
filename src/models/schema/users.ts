@@ -9,7 +9,7 @@ export const users = pgTable("users",{
     email:varchar('email',{length:100}).notNull().unique(),
     username: varchar('username',{length:24}).notNull().unique(),
     created_at:timestamp('created_at').defaultNow().notNull(),
-    updated_at:timestamp('updated_at').defaultNow().notNull()
+    updated_at:timestamp('updated_at')
 })
 //add a socials table for social media accounts
 export const socials = pgTable('socials',{
@@ -22,12 +22,12 @@ export const socials = pgTable('socials',{
 export const userRoles = pgTable('user_roles',{
     // id:serial('id').primaryKey(),
     userId:uuid('user_id').notNull().references(()=>users.id,{onDelete:'cascade'}),
-    roleId:integer('role_id').notNull().references(()=>roles.id,{onDelete:'cascade'}),
+    roleCode:integer('role_code').notNull().references(()=>roles.code,{onDelete:'cascade'}),
     assigned_at: timestamp('assigned_at').notNull().defaultNow(),
-    expires_at: timestamp('expires_at').notNull().defaultNow(),
-    updated_at:timestamp('updated_at').notNull().defaultNow()
+    expires_at: timestamp('expires_at'),
+    updated_at:timestamp('updated_at')
 },(t)=>[
-    primaryKey({name:"pk_userRoles",columns:[t.roleId,t.userId]})
+    primaryKey({name:"pk_userRoles",columns:[t.roleCode,t.userId]})
     ]
 )
 ///start relations
@@ -48,7 +48,7 @@ export const userRoleRelations = relations(userRoles,({one})=>({
         references:[users.id]
     }),
     role: one(roles,{
-        fields:[userRoles.roleId],
-        references:[roles.id]
+        fields:[userRoles.roleCode],
+        references:[roles.code]
     })
 }))

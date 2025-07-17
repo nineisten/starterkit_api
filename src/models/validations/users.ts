@@ -1,10 +1,15 @@
 import { nullable } from "zod/v4";
 import {  
+    validateBoolean,
+    validateCode,
+    validateDate,
     validateEmail, 
     validateEmail_null,
     validateId, 
     validateName, 
+    validateRoleArray, 
     validateSocials, 
+    validateString_50, 
     validateUrl, 
     validateUsername, 
     validateUsername_null,
@@ -51,7 +56,7 @@ export const selectUserByUsernameSchema = z.object({
 
 export const selectUserRolesSchema = z.object({
     userId:validateUUID,
-    roleId:validateId
+    roleCode:validateCode
 })
 
 export type getUser = z.infer<typeof selectUserSchema>
@@ -67,12 +72,18 @@ export const updateUserSchema = z.object({
     email:validateEmail
 })
 
-export const updateSocialsSchema = z.object({
+export const updateUserSocialsSchema = z.object({
     
 })
-
-export const updateRolesSchema = z.object({
-    userId:validateUUID,
-    roleId:validateId,
+export const updateUserRoleSchema = z.object({
+    name:validateName,
+    deleteRole:validateBoolean,
+    expires_at:validateDate,
 })
+
+export const updateUserRolesSchema = z.object({
+    userId:validateUUID,
+    roleCode:validateCode,
+})
+export type updateUserRole = z.infer<typeof updateUserRoleSchema>
 

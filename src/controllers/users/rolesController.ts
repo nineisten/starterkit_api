@@ -4,6 +4,10 @@ import { db } from "../../models";
 import { and, eq, or } from "drizzle-orm";
 import { insertRoleSchema, selectRoleSchema } from "../../models/validations/roles";
 
+
+///create user roles for different permission levels
+/// each role has an ID, Name, Description, and Code.
+/// when user data is included in a request it is sent with the codes instead of the role names.
 export async function createRoles(req:Request,res:Response,next:NextFunction){
     try {
         const result = insertRoleSchema.safeParse(req.body)
@@ -31,6 +35,9 @@ export async function createRoles(req:Request,res:Response,next:NextFunction){
         next(error)
     }
 }
+
+///return a list of roles & codes
+
 export async function getRoles(req:Request,res:Response,next:NextFunction){
     try {
         const existingRoles = await db.query.roles.findMany()
@@ -43,7 +50,7 @@ export async function getRoles(req:Request,res:Response,next:NextFunction){
         next(error)
     }
 }
-
+//get the individual role based on the url params 
 export async function getRole(req:Request,res:Response,next:NextFunction){
   try {
         const result = selectRoleSchema.safeParse(req.params)
@@ -63,6 +70,8 @@ export async function getRole(req:Request,res:Response,next:NextFunction){
         next(error)
   }
 }
+
+//remove selected roles by name.
 export async function deleteRoles(req:Request,res:Response,next:NextFunction){
     try {
         const result = selectRoleSchema.safeParse(req.body)

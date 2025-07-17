@@ -11,8 +11,8 @@ export const posts = pgTable('posts',{
     body:text('body').notNull(),
     featuredImg:text('featured_img'),
     created_at:timestamp('created_at').defaultNow().notNull(),
-    published_at:timestamp('published_at').defaultNow(),
-    updated_at:timestamp('updated_at').defaultNow().notNull()
+    published_at:timestamp('published_at'),
+    updated_at:timestamp('updated_at')
 })
 //apply authors to post
 export const postAuthors = pgTable('post_authors',{

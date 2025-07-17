@@ -5,8 +5,8 @@ import {
     getUsers,
     getUserByUsername,
     assignUserRoles,
-    // updateUser,
-    // deleteUser, 
+    updateUser,
+    deleteUser, 
     // appendUserRoles,
     // deleteUserRoles
 } from "../controllers/users/userController"
@@ -17,9 +17,9 @@ const userRoutes = Router()
 userRoutes.get('/',getUsers)
 userRoutes.get('/:username',getUserByUsername)
 userRoutes.post('/',checkUser,createUser)
-userRoutes.post('/roles',assignUserRoles)
-// userRoutes.put('/',updateUser)
-// userRoutes.delete('/',deleteUser)
+// userRoutes.post('/roles',assignUserRoles)
+userRoutes.put('/',checkUser,updateUser)
+userRoutes.delete('/',checkUser,deleteUser)
 // userRoutes.put('/roles',appendUserRoles)
 // userRoutes.delete('/roles',deleteUserRoles)
 export default userRoutes;

@@ -1,4 +1,4 @@
-import { eq, or } from "drizzle-orm";
+import { and, eq, or } from "drizzle-orm";
 import { db } from "../models";
 import { users } from "../models/schema/users";
 import { NextFunction,Response,Request } from "express";
@@ -11,15 +11,24 @@ export async function checkUser(req:Request,res:Response,next:NextFunction) {
             return
         }
         const {email,username} = result.data
-        const userRecord = await db.select()
-        .from(users)
-        .where(
-            or(
+        const data = await db.query.users.findFirst({
+            where: and(
                 eq(users.username,username),
                 eq(users.email,email)
-            )
-        )
-        req.userExists = userRecord.length > 0
+            ),
+            with:{
+                socials:true,
+                userRoles:{
+                    columns:{
+                        assigned_at:true,
+                        roleCode:true,
+                        expires_at:true
+                    }
+                }
+            }
+        })
+
+        req.existingUser = data
         
         next()
 }

@@ -1,5 +1,5 @@
 {
-  "id": "5d59bf21-452e-4c13-9085-c1b117ef4408",
+  "id": "0663329d-c1a3-4d4e-84a7-c91286533123",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -171,8 +171,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "role_id": {
-          "name": "role_id",
+        "role_code": {
+          "name": "role_code",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
@@ -188,15 +188,13 @@
           "name": "expires_at",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
+          "notNull": false
         },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
+          "notNull": false
         }
       },
       "indexes": {},
@@ -214,15 +212,15 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "user_roles_role_id_roles_id_fk": {
-          "name": "user_roles_role_id_roles_id_fk",
+        "user_roles_role_code_roles_code_fk": {
+          "name": "user_roles_role_code_roles_code_fk",
           "tableFrom": "user_roles",
           "tableTo": "roles",
           "columnsFrom": [
-            "role_id"
+            "role_code"
           ],
           "columnsTo": [
-            "id"
+            "code"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -232,7 +230,7 @@
         "pk_userRoles": {
           "name": "pk_userRoles",
           "columns": [
-            "role_id",
+            "role_code",
             "user_id"
           ]
         }
@@ -282,8 +280,7 @@
           "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
+          "notNull": false
         }
       },
       "indexes": {},
@@ -528,15 +525,13 @@
           "name": "published_at",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": false,
-          "default": "now()"
+          "notNull": false
         },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
+          "notNull": false
         }
       },
       "indexes": {},
